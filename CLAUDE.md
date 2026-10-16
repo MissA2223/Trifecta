@@ -2,17 +2,6 @@
 
 ## Project Overview
 
-LibreChat is a monorepo with the following key workspaces:
-
-| Workspace | Language | Side | Dependency | Purpose |
-|---|---|---|---|---|
-| `/api` | JS (legacy) | Backend | `packages/api`, `packages/data-schemas`, `packages/data-provider`, `@librechat/agents` | Express server — minimize changes here |
-| `/packages/api` | **TypeScript** | Backend | `packages/data-schemas`, `packages/data-provider` | New backend code lives here (TS only, consumed by `/api`) |
-| `/packages/data-schemas` | TypeScript | Backend | `packages/data-provider` | Database models/schemas, shareable across backend projects |
-| `/packages/data-provider` | TypeScript | Shared | — | Shared API types, endpoints, data-service — used by both frontend and backend |
-| `/client` | TypeScript/React | Frontend | `packages/data-provider`, `packages/client` | Frontend SPA |
-| `/packages/client` | TypeScript | Frontend | `packages/data-provider` | Shared frontend utilities |
-
 The source code for `@librechat/agents` (major backend dependency, same team) is at `/home/danny/agentus`.
 
 ---
@@ -103,62 +92,6 @@ Multi-line imports count total character length across all lines. Consolidate va
 - `for (let i = 0; ...)` for performance-critical or index-dependent operations.
 - `for...of` for simple array iteration.
 - `for...in` only for object property enumeration.
-
----
-
-## Frontend Rules (`client/src/**/*`)
-
-### Localization
-
-- All user-facing text must use `useLocalize()`.
-- Only update English keys in `client/src/locales/en/translation.json` (other languages are automated externally).
-- Semantic key prefixes: `com_ui_`, `com_assistants_`, etc.
-
-### Components
-
-- TypeScript for all React components with proper type imports.
-- Semantic HTML with ARIA labels (`role`, `aria-label`) for accessibility.
-- Group related components in feature directories (e.g., `SidePanel/Memories/`).
-- Use index files for clean exports.
-
-### Data Management
-
-- Feature hooks: `client/src/data-provider/[Feature]/queries.ts` → `[Feature]/index.ts` → `client/src/data-provider/index.ts`.
-- React Query (`@tanstack/react-query`) for all API interactions; proper query invalidation on mutations.
-- QueryKeys and MutationKeys in `packages/data-provider/src/keys.ts`.
-
-### Data-Provider Integration
-
-- Endpoints: `packages/data-provider/src/api-endpoints.ts`
-- Data service: `packages/data-provider/src/data-service.ts`
-- Types: `packages/data-provider/src/types/queries.ts`
-- Use `encodeURIComponent` for dynamic URL parameters.
-
-### Performance
-
-- Prioritize memory and speed efficiency at scale.
-- Cursor pagination for large datasets.
-- Proper dependency arrays to avoid unnecessary re-renders.
-- Leverage React Query caching and background refetching.
-
----
-
-## Development Commands
-
-| Command | Purpose |
-|---|---|
-| `npm run smart-reinstall` | Install deps (if lockfile changed) + build via Turborepo |
-| `npm run reinstall` | Clean install — wipe `node_modules` and reinstall from scratch |
-| `npm run backend` | Start the backend server |
-| `npm run backend:dev` | Start backend with file watching (development) |
-| `npm run build` | Build all compiled code via Turborepo (parallel, cached) |
-| `npm run frontend` | Build all compiled code sequentially (legacy fallback) |
-| `npm run frontend:dev` | Start frontend dev server with HMR (port 3090, requires backend running) |
-| `npm run build:data-provider` | Rebuild `packages/data-provider` after changes |
-
-- Node.js: v24.16.0
-- Database: MongoDB
-- Backend runs on `http://localhost:3080/`; frontend dev server on `http://localhost:3090/`
 
 ---
 
